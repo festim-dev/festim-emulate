@@ -1,0 +1,12 @@
+name: festim-emulate
+channels:
+  - conda-forge
+
+dependencies:
+  - python<3.13
+  - pip
+  - festim
+  - matplotlib
+  - ipykernel
+  - pip:
+    - autoemulate
