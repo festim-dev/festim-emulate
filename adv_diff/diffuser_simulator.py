@@ -29,7 +29,9 @@ class Diffuser(Simulator):
         return torch.tensor(result, dtype=torch.float32).unsqueeze(0)
 
 
-def make_festim_model(c_inlet: float, velocity_magnitude: float) -> float:
+def make_festim_model(
+    c_inlet: float, velocity_magnitude: float, run_post_processing=False
+) -> float:
     # print(
     #     f"Running simulation with c_inlet={c_inlet} and velocity_magnitude={velocity_magnitude}"
     # )
@@ -116,7 +118,8 @@ def make_festim_model(c_inlet: float, velocity_magnitude: float) -> float:
     my_model.initialise()
 
     my_model.run()
-    # post_processing(my_model)
+    if run_post_processing:
+        post_processing(my_model)
     return top_flux.data[-1]
 
 
@@ -153,7 +156,7 @@ def post_processing(model: F.HydrogenTransportProblemDiscontinuous):
         u_grid = pyvista.UnstructuredGrid(topology, cell_types, geometry)
         u_grid.point_data["c"] = hydrogen_concentration.x.array.real
         u_grid.set_active_scalars("c")
-        u_plotter.add_mesh(u_grid, show_edges=True)
+        u_plotter.add_mesh(u_grid, show_edges=False)
     u_plotter.view_xy()
 
     if not pyvista.OFF_SCREEN:
